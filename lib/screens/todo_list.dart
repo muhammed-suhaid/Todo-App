@@ -30,7 +30,7 @@ class _TodoListPageState extends State<TodoListPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: navigateToAdd,
+        onPressed: navigateToAddPage,
         child: const Icon(
           Icons.add,
           size: 35,
@@ -38,7 +38,7 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
       body: Visibility(
         visible: isLoading,
-         replacement:RefreshIndicator(
+        replacement: RefreshIndicator(
           onRefresh: fetchTodo,
           child: ListView.builder(
             itemCount: items.length,
@@ -70,16 +70,22 @@ class _TodoListPageState extends State<TodoListPage> {
             },
           ),
         ),
-        child: Center(child: CircularProgressIndicator(),),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
 
-  void navigateToAdd() {
+  Future<void> navigateToAddPage() async {
     final route = MaterialPageRoute(
       builder: (context) => const AddTodoPage(),
     );
-    Navigator.push(context, route);
+    await Navigator.push(context, route);
+    setState(() {
+      isLoading = true;
+    });
+    fetchTodo();
   }
 
   Future<void> deleteById(String id) async {
