@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:todo_api_app/screens/add_page.dart';
-import 'package:http/http.dart' as http;
 import 'package:todo_api_app/services/todo_services.dart';
+import 'package:todo_api_app/utils/snackbar_helper.dart';
+import 'package:todo_api_app/widget/todo_card.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -51,31 +50,11 @@ class _TodoListPageState extends State<TodoListPage> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index] as Map;
-                final id = item['_id'] as String;
-                return Card(
-                  child: ListTile(
-                    leading: CircleAvatar(child: Text('${index + 1}')),
-                    title: Text(item['title']),
-                    subtitle: Text(item['description']),
-                    trailing: PopupMenuButton(onSelected: (value) {
-                      if (value == 'edit') {
-                        navigateToEditPage(item);
-                      } else if (value == 'delete') {
-                        deleteById(id);
-                      }
-                    }, itemBuilder: (context) {
-                      return [
-                        const PopupMenuItem(
-                          value: "edit",
-                          child: Text("Edit"),
-                        ),
-                        const PopupMenuItem(
-                          value: "delete",
-                          child: Text("Delete"),
-                        ),
-                      ];
-                    }),
-                  ),
+                return TodoCard(
+                  index: index,
+                  item: item,
+                  navigateEdit: navigateToEditPage,
+                  deleteById: deleteById,
                 );
               },
             ),
@@ -118,7 +97,7 @@ class _TodoListPageState extends State<TodoListPage> {
         items = filtered;
       });
     } else {
-      showErrorMessage('Deletion failed');
+      showErrorMessage(context, message: 'Deletion failed');
     }
   }
 
@@ -130,25 +109,10 @@ class _TodoListPageState extends State<TodoListPage> {
         items = response;
       });
     } else {
-      showErrorMessage("Something went wrong");
+      showErrorMessage(context, message: "Something went wrong");
     }
     setState(() {
       isLoading = false;
     });
-  }
-
-  void showErrorMessage(String message) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
