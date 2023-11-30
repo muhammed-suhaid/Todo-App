@@ -38,11 +38,29 @@ class _TodoListPageState extends State<TodoListPage> {
       body: ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
-          final item = items[index];
+          final item = items[index] as Map;
+          final id = item['_id'] as String;
           return ListTile(
             leading: CircleAvatar(child: Text('${index + 1}')),
             title: Text(item['title']),
             subtitle: Text(item['description']),
+            trailing: PopupMenuButton(onSelected: (value) {
+              if (value == 'edit') {
+              } else if (value == 'delete') {
+                deleteById(id);
+              }
+            }, itemBuilder: (context) {
+              return [
+                const PopupMenuItem(
+                  value: "edit",
+                  child: Text("Edit"),
+                ),
+                const PopupMenuItem(
+                  value: "delete",
+                  child: Text("Delete"),
+                ),
+              ];
+            }),
           );
         },
       ),
@@ -54,6 +72,20 @@ class _TodoListPageState extends State<TodoListPage> {
       builder: (context) => const AddTodoPage(),
     );
     Navigator.push(context, route);
+  }
+
+  Future<void> deleteById(String id) async {
+    final url = 'https://api.nstack.in/v1/todos/$id';
+    final uri = Uri.parse(url);
+    final response = await http.delete(uri);
+    if (response.statusCode == 200) {
+      final filtered = items.where((element) => element['_id'] != id).toList();
+      setState(() {
+        items = filtered;
+      });
+    } else {
+      showErrorMessage('Deletion failed');
+    }
   }
 
   Future<void> fetchTodo() async {
@@ -68,5 +100,20 @@ class _TodoListPageState extends State<TodoListPage> {
         items = result;
       });
     } else {}
+  }
+
+  void showErrorMessage(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
