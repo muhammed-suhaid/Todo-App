@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:todo_api_app/screens/add_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:todo_api_app/services/todo_services.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -40,35 +41,44 @@ class _TodoListPageState extends State<TodoListPage> {
         visible: isLoading,
         replacement: RefreshIndicator(
           onRefresh: fetchTodo,
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index] as Map;
-              final id = item['_id'] as String;
-              return ListTile(
-                leading: CircleAvatar(child: Text('${index + 1}')),
-                title: Text(item['title']),
-                subtitle: Text(item['description']),
-                trailing: PopupMenuButton(onSelected: (value) {
-                  if (value == 'edit') {
-                    navigateToEditPage(item);
-                  } else if (value == 'delete') {
-                    deleteById(id);
-                  }
-                }, itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem(
-                      value: "edit",
-                      child: Text("Edit"),
-                    ),
-                    const PopupMenuItem(
-                      value: "delete",
-                      child: Text("Delete"),
-                    ),
-                  ];
-                }),
-              );
-            },
+          child: Visibility(
+            visible: items.isNotEmpty,
+            replacement: const Center(
+              child: Text("No Todo item"),
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index] as Map;
+                final id = item['_id'] as String;
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(child: Text('${index + 1}')),
+                    title: Text(item['title']),
+                    subtitle: Text(item['description']),
+                    trailing: PopupMenuButton(onSelected: (value) {
+                      if (value == 'edit') {
+                        navigateToEditPage(item);
+                      } else if (value == 'delete') {
+                        deleteById(id);
+                      }
+                    }, itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem(
+                          value: "edit",
+                          child: Text("Edit"),
+                        ),
+                        const PopupMenuItem(
+                          value: "delete",
+                          child: Text("Delete"),
+                        ),
+                      ];
+                    }),
+                  ),
+                );
+              },
+            ),
           ),
         ),
         child: const Center(
@@ -101,10 +111,8 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> deleteById(String id) async {
-    final url = 'https://api.nstack.in/v1/todos/$id';
-    final uri = Uri.parse(url);
-    final response = await http.delete(uri);
-    if (response.statusCode == 200) {
+    final isSuccess = await TodoServices.deleteById(id);
+    if (isSuccess) {
       final filtered = items.where((element) => element['_id'] != id).toList();
       setState(() {
         items = filtered;
@@ -115,16 +123,14 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> fetchTodo() async {
-    const url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
+    final response = await TodoServices.fetchTodos();
 
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body) as Map;
-      final result = json['items'] as List;
+    if (response != null) {
       setState(() {
-        items = result;
+        items = response;
       });
+    } else {
+      showErrorMessage("Something went wrong");
     }
     setState(() {
       isLoading = false;
