@@ -12,6 +12,7 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
+  bool isLoading = true;
   List items = [];
 
   @override
@@ -35,34 +36,41 @@ class _TodoListPageState extends State<TodoListPage> {
           size: 35,
         ),
       ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index] as Map;
-          final id = item['_id'] as String;
-          return ListTile(
-            leading: CircleAvatar(child: Text('${index + 1}')),
-            title: Text(item['title']),
-            subtitle: Text(item['description']),
-            trailing: PopupMenuButton(onSelected: (value) {
-              if (value == 'edit') {
-              } else if (value == 'delete') {
-                deleteById(id);
-              }
-            }, itemBuilder: (context) {
-              return [
-                const PopupMenuItem(
-                  value: "edit",
-                  child: Text("Edit"),
-                ),
-                const PopupMenuItem(
-                  value: "delete",
-                  child: Text("Delete"),
-                ),
-              ];
-            }),
-          );
-        },
+      body: Visibility(
+        visible: isLoading,
+         replacement:RefreshIndicator(
+          onRefresh: fetchTodo,
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index] as Map;
+              final id = item['_id'] as String;
+              return ListTile(
+                leading: CircleAvatar(child: Text('${index + 1}')),
+                title: Text(item['title']),
+                subtitle: Text(item['description']),
+                trailing: PopupMenuButton(onSelected: (value) {
+                  if (value == 'edit') {
+                  } else if (value == 'delete') {
+                    deleteById(id);
+                  }
+                }, itemBuilder: (context) {
+                  return [
+                    const PopupMenuItem(
+                      value: "edit",
+                      child: Text("Edit"),
+                    ),
+                    const PopupMenuItem(
+                      value: "delete",
+                      child: Text("Delete"),
+                    ),
+                  ];
+                }),
+              );
+            },
+          ),
+        ),
+        child: Center(child: CircularProgressIndicator(),),
       ),
     );
   }
@@ -99,7 +107,10 @@ class _TodoListPageState extends State<TodoListPage> {
       setState(() {
         items = result;
       });
-    } else {}
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void showErrorMessage(String message) {
