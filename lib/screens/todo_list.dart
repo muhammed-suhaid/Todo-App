@@ -42,7 +42,7 @@ class _TodoListPageState extends State<TodoListPage> {
           onRefresh: fetchTodo,
           child: Visibility(
             visible: items.isNotEmpty,
-            replacement: const Center( 
+            replacement: const Center(
               child: Text("No Todo item"),
             ),
             child: ListView.builder(

@@ -19,17 +19,17 @@ class MyApp extends StatelessWidget {
     var kLightColorScheme = ColorScheme.fromSeed(
       seedColor: const Color.fromARGB(255, 202, 252, 0),
     );
-    var kDarkColorScheme = ColorScheme.fromSeed(  
+    var kDarkColorScheme = ColorScheme.fromSeed(
       brightness: Brightness.dark,
       seedColor: const Color.fromARGB(252, 204, 255, 0),
     );
     return MaterialApp(
-      title: 'Todo App', 
+      title: 'Todo App',
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: kDarkColorScheme,
       ),
-      theme: ThemeData().copyWith( 
+      theme: ThemeData().copyWith(
         colorScheme: kLightColorScheme,
       ),
       home: const TodoListPage(),
