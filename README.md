@@ -3,7 +3,6 @@
 With its intuitive interface, users can effortlessly log their tasks, each with a title and detailed description. Once logged, todos seamlessly organize into a structured list for convenient reference and management.
 
 ### Key features: 
-
 1. Dark and light mode
 2. log Todos
 3. Update Todos
