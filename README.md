@@ -1,16 +1,10 @@
-# todo_api_app
+# Todo App! 📝 
 
-A new Flutter project.
+With its intuitive interface, users can effortlessly log their tasks, each with a title and detailed description. Once logged, todos seamlessly organize into a structured list for convenient reference and management.
 
-## Getting Started
+### Key features: 
+1. log Todos
+2. Update Todos
+3. Delete Todos
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Powered by the versatile capabilities of the free API from https://api.nstack.in/, users can enjoy seamless integration for saving, deleting, updating, and listing tasks. 
