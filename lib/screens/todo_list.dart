@@ -26,7 +26,7 @@ class _TodoListPageState extends State<TodoListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Center(
-          child: Text("Todo List"),
+          child: Text("Todo App"),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -42,7 +42,7 @@ class _TodoListPageState extends State<TodoListPage> {
           onRefresh: fetchTodo,
           child: Visibility(
             visible: items.isNotEmpty,
-            replacement: const Center(
+            replacement: const Center( 
               child: Text("No Todo item"),
             ),
             child: ListView.builder(

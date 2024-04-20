@@ -20,7 +20,7 @@ void showErrorMessage(
 
 void showSuccessMessage(
   BuildContext context, {
-  required String message,
+  required String message,  
 }) {
   final snackBar = SnackBar(
     content: Text(

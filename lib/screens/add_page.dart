@@ -85,6 +85,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
       titleContoller.text = '';
       descriptionController.text = '';
       showSuccessMessage(context, message: 'Creation Success');
+      Navigator.pop(context);
     } else {
       showErrorMessage(context, message: 'Creation Failed');
     }
@@ -105,6 +106,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     //Show success or fail message based on status
     if (isSuccess) {
       showSuccessMessage(context, message: 'Update Success');
+      Navigator.pop(context);
     } else {
       showErrorMessage(context, message: 'Updation Failed');
     }
